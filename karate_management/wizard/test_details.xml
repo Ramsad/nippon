@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="test_details_form" model="ir.ui.view">
+            <field name="name">Test Details Form</field>
+            <field name="model">members.certificate.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Test Details">
+                    <header>
+
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="new,paid,passed,failed"/>
+                    </header>
+                    <sheet>
+
+                        <div class="oe_button_box" name="button_box">
+                            <button attrs="{'invisible':[('invoice_id','=',False)]}" type="object"
+                                    class="oe_stat_button" icon="fa-pencil-square-o"
+                                    name="action_view_test_invoices"
+                            >
+                                Invoice
+                            </button>
+                        </div>
+
+                        <group>
+
+
+                            <group>
+                                <field name="belt" on_change="1"/>
+                                <field name="certificate_no"/>
+                                <field name="certificate"/>
+                                <field name="partner_id"/>
+                                <field name="invoice_id" invisible="1"/>
+                                <field name="amount"/>
+                            </group>
+                            <group>
+                                <field name="kyu" attrs="{'invisible':[('belt','=','Black')]}"/>
+                                <field name="dan" attrs="{'invisible':[('belt','!=','Black')]}"/>
+
+                            </group>
+                        </group>
+
+
+                    </sheet>
+                    <footer>
+                        <button name="generate_invoice" state="new"
+                                attrs="{'invisible':[('invoice_id','!=',False)]}"
+                                string="Generate Invoice" type="object" class="oe_highlight"/>
+                        <button string="Discard" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="test_details_action" model="ir.actions.act_window">
+            <field name="name">Test &amp; Certifications </field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">members.certificate.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    <!-- Add Text Here -->
+                </p>
+                <p>
+                    <!-- More details about what a user can do with this object will be OK -->
+                </p>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="activities_form" model="ir.ui.view">
+            <field name="name">Activities</field>
+            <field name="model">membership.activities</field>
+            <field name="arch" type="xml">
+                <tree string="Activities"  editable="bottom">
+                    <field name="name" required="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="activities_action" model="ir.actions.act_window">
+            <field name="name">Activities</field>
+            <field name="res_model">membership.activities</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+
+        <menuitem id="activities_menu" name="Activities" parent="membership.menu_marketing_config_association" action="activities_action" sequence="20"/>
+
+
+    </data>
+</odoo>

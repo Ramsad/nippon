@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_activities,Activities.karate_management,model_membership_activities,base.group_user,1,1,1,1
+access_certificate,Activities.Certificate,model_members_certificate,base.group_user,1,1,1,1
+access_certificate_wizard,Activities.Certificate Wizard,model_members_certificate_wizard,base.group_user,1,1,1,1

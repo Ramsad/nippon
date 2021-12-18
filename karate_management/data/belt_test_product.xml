@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data >
+<record id="belt_test" model="product.product">
+        <field name="list_price">250</field>
+        <field name="type">service</field>
+        <field name="name">Karate Belt Test</field>
+        <field name="taxes_id" eval="False" />
+        <field name="supplier_taxes_id" eval="False"/>
+    </record>
+
+
+</data>
+</odoo>

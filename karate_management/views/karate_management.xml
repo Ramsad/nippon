@@ -1,0 +1,593 @@
+<odoo>
+    <data>
+        <!--        <record id="karate_management_form" model="ir.ui.view">-->
+        <!--            <field name="name">Karate Management Form</field>-->
+        <!--            <field name="model">res.partner</field>-->
+        <!--            <field name="inherit_id" ref="base.view_partner_form"/>-->
+        <!--            <field name="arch" type="xml">-->
+
+        <!--                <xpath expr="//field[@name='image_1920']" position="before">-->
+        <!--                   <h2><strong><field name="reg_no" readonly="1"/></strong></h2>-->
+        <!--                </xpath>-->
+
+
+        <!--                <xpath expr="//field[@name='type']" position="after">-->
+        <!--                    <field name="activities"  options="{'no_create': True, 'no_open': True}"/>-->
+        <!--                </xpath>-->
+        <!--                <xpath expr="//field[@name='vat']" position="after">-->
+        <!--                    <field name="nationality"  options="{'no_create': True, 'no_open': True}" />-->
+        <!--                </xpath>-->
+
+        <!--                <xpath expr="//field[@name='function']" position="before">-->
+        <!--                    <field name="registration_date"/>-->
+        <!--                    <field name="dob"/>-->
+        <!--                     <field name="age" readonly="1"/>-->
+        <!--                    <field name="gender"/>-->
+        <!--                </xpath>-->
+
+        <!--                <xpath expr="//field[@name='category_id']" position="before">-->
+        <!--                    <field name="whatsapp"/>-->
+        <!--                </xpath>-->
+        <!--                <xpath expr="//field[@name='free_member']" position="before">-->
+        <!--                    <field name="is_student"/>-->
+        <!--                </xpath>-->
+        <!--            </field>-->
+        <!--        </record>-->
+
+        <record id="karate_management_system_form" model="ir.ui.view">
+            <field name="name">Karate Members Form</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <form string="Partners">
+                    <div class="alert alert-warning oe_edit_only" role="alert"
+                         attrs="{'invisible': [('same_vat_partner_id', '=', False)]}">
+                        A partner with the same
+                        <span>
+                            <span class="o_vat_label">Tax ID</span>
+                        </span>
+                        already exists (<field name="same_vat_partner_id"/>), are you sure to create a new one?
+                    </div>
+                    <header>
+                        <button name="%(membership.action_membership_invoice_view)d" string="Buy Membership"
+                                type="action" class="oe_highlight"/>
+                        <button name="%(karate_management.test_details_action)d" string="Enter Test Details"
+                                type="action" context="{'partner_id':id,'default_partner_id':id}" />
+                        <field name="membership_state" widget="statusbar"
+                               statusbar_visible="paid,invoiced,waiting,canceled,old"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button type="object" class="oe_stat_button" icon="fa-pencil-square-o"
+                                    name="action_view_partner_invoices" context="{'default_partner_id': active_id}">
+                                <div class="o_form_field o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="currency_id" invisible="1"/>
+                                        <field name="total_invoiced" widget="monetary"
+                                               options="{'currency_field': 'currency_id'}"/>
+                                    </span>
+                                    <span class="o_stat_text">Invoiced</span>
+                                </div>
+                            </button>
+                        </div>
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                                attrs="{'invisible': [('active', '=', True)]}"/>
+                        <h2>
+                            <strong>
+                                <field name="reg_no" readonly="1"/>
+                            </strong>
+                        </h2>
+                        <field name="image_1920" widget="image" class="oe_avatar"
+                               options="{&quot;preview_image&quot;: &quot;image_128&quot;}"/>
+                        <div class="oe_title">
+                            <field name="is_company" invisible="1"/>
+                            <field name="commercial_partner_id" invisible="1"/>
+                            <field name="active" invisible="1"/>
+                            <field invisible="1" name="company_type" widget="radio" class="oe_edit_only"
+                                   options="{'horizontal': true}"/>
+                            <h1>
+                                <field name="name" default_focus="1" placeholder="Name"
+                                       attrs="{'required' : [('type', '=', 'contact')]}"/>
+                            </h1>
+                            <div class="o_row" invisible="1">
+                                <field name="parent_id" widget="res_partner_many2one" placeholder="Company"
+                                       domain="[('is_company', '=', True)]"
+                                       context="{'default_is_company': True, 'show_vat': True}"
+                                       attrs="{'invisible': ['|', '&amp;', ('is_company','=', True),('parent_id', '=', False),('company_name', '!=', False),('company_name', '!=', '')]}"/>
+                                <field name="company_name"
+                                       attrs="{'invisible': ['|', '|', ('company_name', '=', False), ('company_name', '=', ''), ('is_company', '=', True)]}"/>
+                                <button name="create_company" icon="fa-plus-square" string="Create company"
+                                        type="object" class="oe_edit_only btn-link"
+                                        attrs="{'invisible': ['|', '|', ('is_company','=', True), ('company_name', '=', ''), ('company_name', '=', False)]}"/>
+                            </div>
+                        </div>
+
+                        <group>
+                            <group>
+                                <field name="type" invisible="1" groups="base.group_no_one"
+                                       attrs="{'invisible': [('is_company','=', True)], 'readonly': [('user_ids', '!=', [])]}"/>
+                                <field name="activities" options="{'no_create': True, 'no_open': True}"/>
+                                <span class="o_form_label o_td_label" name="address_name">
+                                    <b attrs="{'invisible': [('type', '!=', 'contact')]}">Address</b>
+                                    <b attrs="{'invisible': [('type', '!=', 'invoice')]}">Invoice Address</b>
+                                    <b attrs="{'invisible': [('type', '!=', 'delivery')]}">Delivery Address</b>
+                                    <b attrs="{'invisible': [('type', '!=', 'other')]}">Other Address</b>
+                                    <b attrs="{'invisible': [('type', '!=', 'private')]}">Private Address</b>
+                                    <b attrs="{'invisible': [('type', '!=', False)]}">Address</b>
+                                </span>
+                                <div class="o_address_format">
+                                    <field name="street" placeholder="Street..." class="o_address_street"
+                                           attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
+                                    <field name="street2" placeholder="Street 2..." class="o_address_street"
+                                           attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
+                                    <field name="city" placeholder="City" class="o_address_city"
+                                           attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
+                                    <field name="state_id" class="o_address_state" placeholder="State"
+                                           options="{'no_open': True, 'no_quick_create': True}"
+                                           attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"
+                                           context="{'country_id': country_id, 'default_country_id': country_id, 'zip': zip}"/>
+                                    <field name="zip" placeholder="ZIP" class="o_address_zip"
+                                           attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
+                                    <field name="country_id" placeholder="Country" class="o_address_country"
+                                           options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"
+                                           attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
+                                </div>
+                                <field name="vat" placeholder="e.g. BE0477472701" invisible="1"
+                                       attrs="{'readonly': [('parent_id','!=',False)]}"/>
+                                <field name="nationality" options="{'no_create': True, 'no_open': True}"/>
+                            </group>
+                            <group>
+                                <field name="registration_date"/>
+                                <field name="dob"/>
+                                <field name="age" readonly="1"/>
+                                <field name="gender"/>
+                                <field name="function" invisible="1" placeholder="e.g. Sales Director"
+                                       attrs="{'invisible': [('is_company','=', True)]}"/>
+                                <field name="phone" widget="phone"/>
+                                <field name="mobile" widget="phone"/>
+                                <field name="whatsapp"/>
+                                <field name="user_ids" invisible="1"/>
+                                <field name="email" widget="email" context="{'gravatar_image': True}"
+                                       attrs="{'required': [('user_ids','!=', [])]}"/>
+                                <field name="website" invisible="1" widget="url"
+                                       placeholder="e.g. https://www.odoo.com"/>
+                                <field name="title" invisible="1" options="{&quot;no_open&quot;: True}"
+                                       placeholder="e.g. Mister" attrs="{'invisible': [('is_company', '=', True)]}"/>
+                                <field name="active_lang_count" invisible="1"/>
+                                <label for="lang" attrs="{'invisible': [('active_lang_count', '&lt;=', 1)]}"/>
+                                <div class="o_row" attrs="{'invisible': [('active_lang_count', '&lt;=', 1)]}">
+                                    <field name="lang"/>
+                                    <button type="action" name="53" class="btn-sm btn-link mb4 fa fa-globe"
+                                            aria-label="More languages" groups="base.group_system"
+                                            title="More languages"/>
+                                </div>
+                                <field name="category_id" widget="many2many_tags"
+                                       options="{'color_field': 'color', 'no_create_edit': True}"
+                                       placeholder="Tags..."/>
+                            </group>
+                        </group>
+
+                        <notebook colspan="4" modifiers="{}">
+                            <page string="Contacts &amp; Addresses" name="contact_addresses" autofocus="autofocus"
+                                  modifiers="{}">
+                                <field name="child_ids" mode="kanban"
+                                       context="{'default_is_student': 0,'default_parent_id': active_id, 'default_street': street, 'default_street2': street2, 'default_city': city, 'default_state_id': state_id, 'default_zip': zip, 'default_country_id': country_id, 'default_lang': None, 'default_user_id': user_id, 'default_type': 'other'}"
+                                       modifiers="{}" id="child_ids">
+                                    <kanban>
+                                        <field name="id"/>
+                                        <field name="color"/>
+                                        <field name="name"/>
+                                        <field name="title"/>
+                                        <field name="type"/>
+                                        <field name="email"/>
+                                        <field name="parent_id"/>
+                                        <field name="is_company"/>
+                                        <field name="function"/>
+                                        <field name="phone"/>
+                                        <field name="street"/>
+                                        <field name="street2"/>
+                                        <field name="zip"/>
+                                        <field name="city"/>
+                                        <field name="country_id"/>
+                                        <field name="mobile"/>
+                                        <field name="state_id"/>
+                                        <field name="image_128"/>
+                                        <field name="lang"/>
+                                        <!-- fields in form x2many view to diminish requests -->
+                                        <field name="comment"/>
+                                        <field name="display_name"/>
+                                        <templates>
+                                            <t t-name="kanban-box">
+                                                <t t-set="color" t-value="kanban_color(record.color.raw_value)"/>
+                                                <div t-att-class="color + (record.title.raw_value == 1 ? ' oe_kanban_color_alert' : '') + ' oe_kanban_global_click'">
+                                                    <div class="o_kanban_image">
+                                                        <img alt="Contact image" t-if="record.image_128.raw_value"
+                                                             t-att-src="kanban_image('res.partner', 'image_128', record.id.raw_value)"/>
+                                                        <t t-if="!record.image_128.raw_value">
+                                                            <img alt="Delivery"
+                                                                 t-if="record.type.raw_value === 'delivery'"
+                                                                 t-att-src="_s + &quot;/base/static/img/truck.png&quot;"/>
+                                                            <img alt="Invoice"
+                                                                 t-if="record.type.raw_value === 'invoice'"
+                                                                 t-att-src="_s + &quot;/base/static/img/money.png&quot;"/>
+                                                            <t t-if="record.type.raw_value !== 'invoice' &amp;&amp; record.type.raw_value !== 'delivery'">
+                                                                <img alt="Logo"
+                                                                     t-if="record.is_company.raw_value === true"
+                                                                     t-att-src="_s + &quot;/base/static/img/company_image.png&quot;"/>
+                                                                <img alt="Avatar"
+                                                                     t-if="record.is_company.raw_value === false"
+                                                                     t-att-src="_s + &quot;/base/static/img/avatar_grey.png&quot;"/>
+                                                            </t>
+                                                        </t>
+                                                    </div>
+                                                    <div class="oe_kanban_details">
+                                                        <field name="name"/>
+                                                        <div t-if="record.function.raw_value">
+                                                            <field name="function"/>
+                                                        </div>
+                                                        <div t-if="record.email.raw_value">
+                                                            <field name="email" widget="email"/>
+                                                        </div>
+                                                        <div t-if="record.type.raw_value != 'contact'">
+                                                            <div>
+                                                                <field name="zip"/>
+                                                                <field name="city"/>
+                                                            </div>
+                                                            <field t-if="record.state_id.raw_value" name="state_id"/>
+                                                            <field name="country_id"/>
+                                                        </div>
+                                                        <div t-if="record.phone.raw_value">Phone:
+                                                            <t t-esc="record.phone.value"/>
+                                                        </div>
+                                                        <div t-if="record.mobile.raw_value">Mobile:
+                                                            <t t-esc="record.mobile.value"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </templates>
+                                    </kanban>
+                                    <form string="Contact / Address">
+                                        <sheet>
+                                            <!-- parent_id and type fields needed in attrs in base_address_city module which overwrites
+                                            _fields_view_get() of partner. It would be better to put those fields there but the web client
+                                            dosen't support when a field is displayed several times in the same view.-->
+                                            <field name="type" required="1" widget="radio"
+                                                   options="{'horizontal': true}"/>
+                                            <field name="parent_id" invisible="1"/>
+                                            <hr/>
+                                            <group col="12">
+                                                <group colspan="5">
+                                                    <field name="name" string="Contact Name"
+                                                           attrs="{'required' : [('type', '=', 'contact')]}"/>
+                                                    <field name="title" placeholder="e.g. Mr."
+                                                           attrs="{'invisible': [('type','!=', 'contact')]}"/>
+                                                    <field name="function" placeholder="e.g. Sales Director"
+                                                           attrs="{'invisible': [('type','!=', 'contact')]}"/>
+                                                    <label for="street" string="Address"
+                                                           attrs="{'invisible': [('type','=', 'contact')]}"/>
+                                                    <div attrs="{'invisible': [('type','=', 'contact')]}">
+                                                        <div class="o_address_format" name="div_address">
+                                                            <field name="street" placeholder="Street..."
+                                                                   class="o_address_street"/>
+                                                            <field name="street2" placeholder="Street 2..."
+                                                                   class="o_address_street"/>
+                                                            <field name="city" placeholder="City"
+                                                                   class="o_address_city"/>
+                                                            <field name="state_id" class="o_address_state"
+                                                                   placeholder="State"
+                                                                   options="{'no_open': True, 'no_quick_create': True}"
+                                                                   context="{'country_id': country_id, 'default_country_id': country_id, 'zip': zip}"/>
+                                                            <field name="zip" placeholder="ZIP" class="o_address_zip"/>
+                                                            <field name="country_id" placeholder="Country"
+                                                                   class="o_address_country"
+                                                                   options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                                                        </div>
+                                                    </div>
+                                                    <field name="comment" placeholder="Internal notes..."/>
+                                                </group>
+                                                <group colspan="5">
+                                                    <field name="email" widget="email"/>
+                                                    <field name="phone" widget="phone"/>
+                                                    <field name="mobile" widget="phone"/>
+                                                    <field name="is_student" invisible="1"/>
+                                                    <field name="company_id" invisible="1"/>
+                                                </group>
+                                                <group colspan="1">
+                                                    <field name="image_1920" widget="image" class="oe_avatar"
+                                                           nolabel="1" options="{'image_preview': 'image_128'}"/>
+                                                </group>
+                                            </group>
+                                            <field name="lang" invisible="True"/>
+                                            <field name="user_id" invisible="True"/>
+                                        </sheet>
+                                    </form>
+                                </field>
+                            </page>
+                            <page string="Membership" name="membership" modifiers="{}">
+                                <group modifiers="{}">
+                                    <group modifiers="{}">
+                                        <field name="is_student"/>
+                                        <field invisible="1" name="free_member" on_change="1" modifiers="{}"
+                                               id="free_member"/>
+                                        <label for="membership_state" modifiers="{}"/>
+                                        <div modifiers="{}">
+                                            <field name="membership_state" modifiers="{'readonly':true}"
+                                                   id="membership_state"/>
+                                            <button name="%(membership.action_membership_invoice_view)d" type="action"
+                                                    string="Buy Membership"
+                                                    attrs="{'invisible':[('free_member','=',True)]}" class="oe_link"
+                                                    modifiers="{'invisible':[['free_member','=',true]]}" options="{}"/>
+                                        </div>
+                                    </group>
+                                    <group modifiers="{}">
+                                        <!--                                        <field name="associate_member" attrs="{'invisible':[('free_member','=',True)]}" on_change="1" can_create="true" can_write="true" modifiers="{'invisible':[['free_member','=',true]]}" id="associate_member"/>-->
+                                        <field name="membership_start"
+                                               attrs="{'invisible':[('membership_start','=',False)]}"
+                                               modifiers="{'invisible':[['membership_start','=',false]],'readonly':true}"
+                                               id="membership_start"/>
+                                        <field name="membership_stop"
+                                               attrs="{'invisible':[('membership_stop','=',False)]}"
+                                               modifiers="{'invisible':[['membership_stop','=',false]],'readonly':true}"
+                                               id="membership_stop"/>
+                                        <field name="membership_cancel"
+                                               attrs="{'invisible':[('membership_cancel','=',False)]}"
+                                               modifiers="{'invisible':[['membership_cancel','=',false]],'readonly':true}"
+                                               id="membership_cancel"/>
+                                    </group>
+                                </group>
+                                <field name="member_lines" nolabel="1" colspan="4" readonly="1">
+                                    <tree string="Memberships">
+                                        <field name="date"/>
+                                        <field name="membership_id"/>
+                                        <field name="member_price"/>
+                                        <field name="account_invoice_id"/>
+                                        <field name="date_from"/>
+                                        <field name="date_to"/>
+                                        <field name="state"/>
+                                    </tree>
+                                    <form string="Memberships">
+                                        <group col="2">
+                                            <group>
+                                                <field name="membership_id"/>
+                                                <field name="date"/>
+                                                <field name="date_from"/>
+                                                <field name="date_to"/>
+                                                <field name="state"/>
+                                            </group>
+                                            <group>
+                                                <field name="member_price"/>
+                                                <field name="account_invoice_id"
+                                                       context="{'form_view_ref': 'account.view_move_form'}"/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+                            <page string="Test &amp; Certificates ">
+                                <group string="Test Details">
+                                    <field mode="tree" nolabel="1" name="certificate_line_ids" context="{'partner_id':id}">
+                                        <tree>
+                                            <field name="partner_id" invisible="1"/>
+                                            <field name="belt"/>
+
+                                            <field name="kyu"/>
+                                            <field name="dan"/>
+                                            <field name="date"/>
+                                            <field name="payment_state"/>
+                                            <field name="belt" widget="color" string="-"/>
+
+                                        </tree>
+                                        <form>
+                                            <header>
+                                                <button name="generate_invoice" state="new"
+                                                        attrs="{'invisible':[('invoice_id','!=',False)]}"
+                                                        string="Generate Invoice" type="object" class="oe_highlight"/>
+                                                <field name="state" widget="statusbar"
+                                                       statusbar_visible="new,in_progress,passed,failed"/>
+                                            </header>
+                                            <div class="oe_button_box" name="button_box">
+                                                <button  attrs="{'invisible':[('invoice_id','=',False)]}" type="object" class="oe_stat_button" icon="fa-pencil-square-o"
+                                                        name="action_view_test_invoices"
+                                                        >
+                                                    Invoice
+                                                </button>
+                                            </div>
+
+                                            <group>
+
+
+                                                <group>
+                                                    <field name="belt" on_change="1"/>
+                                                    <field name="certificate_no"/>
+                                                    <field name="certificate"/>
+                                                    <field name="partner_id"/>
+                                                    <field name="invoice_id" invisible="1"/>
+                                                    <field name="amount"/>
+                                                </group>
+                                                <group>
+                                                    <field name="kyu" attrs="{'invisible':[('belt','=','Black')]}"/>
+                                                    <field name="dan" attrs="{'invisible':[('belt','!=','Black')]}"/>
+                                                    <field name="payment_state"/>
+                                                </group>
+                                            </group>
+
+                                        </form>
+
+                                    </field>
+                                </group>
+                            </page>
+                            <page invisible="1" name="sales_purchases" string="Sales &amp; Purchase" modifiers="{}">
+                                <group name="container_row_2" modifiers="{}">
+                                    <group string="Sales" name="sale" priority="1" modifiers="{}">
+                                        <field name="user_id" domain="[('share', '=', False)]" can_create="true"
+                                               can_write="true" modifiers="{}" id="user_id"/>
+                                        <field name="team_id" can_create="true" can_write="true" modifiers="{}"
+                                               id="team_id"/>
+                                        <field string="Payment Terms" name="property_payment_term_id" widget="selection"
+                                               can_create="true" can_write="true" modifiers="{}"
+                                               id="property_payment_term_id"/>
+                                    </group>
+                                    <group string="Purchase" name="purchase" priority="2" modifiers="{}">
+                                        <field string="Payment Terms" name="property_supplier_payment_term_id"
+                                               widget="selection" can_create="true" can_write="true" modifiers="{}"
+                                               id="property_supplier_payment_term_id"/>
+                                    </group>
+                                    <group string="Fiscal Information" name="fiscal_information" priority="5"
+                                           modifiers="{}">
+                                        <field name="property_account_position_id"
+                                               options="{'no_create': True, 'no_open': True}" can_create="true"
+                                               can_write="true" modifiers="{}" id="property_account_position_id"/>
+                                    </group>
+                                    <group name="misc" string="Misc" modifiers="{}">
+                                        <field name="ref" string="Reference" modifiers="{}" id="ref"/>
+                                        <field name="company_id" options="{'no_create': True}" force_save="1"
+                                               on_change="1" can_create="true" can_write="true" invisible="1"
+                                               modifiers="{'invisible':true}" id="company_id"/>
+                                        <field name="industry_id" attrs="{'invisible': [('is_company', '=', False)]}"
+                                               options="{'no_create': True}" can_create="true" can_write="true"
+                                               modifiers="{'invisible':[['is_company','=',false]]}" id="industry_id"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Invoicing" invisible="1" name="accounting">
+                                <group modifiers="{}">
+                                    <group string="Bank Accounts" name="banks" modifiers="{}">
+                                        <field name="bank_ids" nolabel="1" modifiers="{}" id="bank_ids"/>
+                                        <button type="action" class="btn-link" name="61"
+                                                context="{'search_default_partner_id': active_id, 'default_partner_id': active_id, 'form_view_ref': 'account.view_company_partner_bank_form'}"
+                                                string="View accounts detail" colspan="2" modifiers="{}" options="{}"/>
+                                    </group>
+                                    <group string="Accounting Entries" name="accounting_entries" modifiers="{}">
+                                        <field name="currency_id" invisible="1" can_create="true" can_write="true"
+                                               modifiers="{'invisible':true,'readonly':true}" id="currency_id__23__"/>
+                                        <field name="property_account_receivable_id" can_create="true" can_write="true"
+                                               modifiers="{'required':true}" id="property_account_receivable_id"/>
+                                        <field name="property_account_payable_id" can_create="true" can_write="true"
+                                               modifiers="{'required':true}" id="property_account_payable_id"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Invoicing" name="accounting_disabled"
+                                  attrs="{'invisible': ['|',('is_company','=',True),('parent_id','=',False)]}"
+                                  modifiers="{'invisible':['|',['is_company','=',true],['parent_id','=',false]]}">
+                                <div modifiers="{}">
+                                    <p modifiers="{}">
+                                        Accounting-related settings are managed on
+                                        <button name="open_commercial_entity" type="object" string="the parent company"
+                                                class="oe_link" modifiers="{}" options="{}"/>
+                                    </p>
+                                </div>
+                            </page>
+                            <page name="internal_notes" string="Internal Notes" modifiers="{}">
+                                <field name="comment" placeholder="Internal note..." modifiers="{}" id="comment"/>
+                                <group colspan="2" col="2" invisible="1" modifiers="{'invisible':true}">
+                                    <separator string="Warning on the Sales Order" colspan="4" modifiers="{}"/>
+                                    <!--                                    <field name="sale_warn" nolabel="1" modifiers="{}" id="sale_warn"/>-->
+                                    <!--                                    <field name="sale_warn_msg" colspan="3" nolabel="1" attrs="{'required':[('sale_warn', '!=', False), ('sale_warn','!=','no-message')],'readonly':[('sale_warn','=','no-message')]}" modifiers="{'readonly':[['sale_warn','=','no-message']],'required':[['sale_warn','!=',false],['sale_warn','!=','no-message']]}" id="sale_warn_msg"/>-->
+                                </group>
+                                <group colspan="2" col="2" invisible="1" modifiers="{'invisible':true}">
+                                    <separator string="Warning on the Invoice" colspan="4" modifiers="{}"/>
+                                    <!--                                    <field name="invoice_warn" nolabel="1" modifiers="{}" id="invoice_warn"/>-->
+                                    <!--                                    <field name="invoice_warn_msg" colspan="3" nolabel="1" attrs="{'required':[('invoice_warn', '!=', False), ('invoice_warn','!=','no-message')],'readonly':[('invoice_warn','=','no-message')]}" modifiers="{'readonly':[['invoice_warn','=','no-message']],'required':[['invoice_warn','!=',false],['invoice_warn','!=','no-message']]}" id="invoice_warn_msg"/>-->
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+
+            </field>
+        </record>
+
+
+        <record id="view_res_partner_member_filter" model="ir.ui.view">
+            <field name="name">res.partner.select</field>
+            <field name="model">res.partner</field>
+            <field name="priority">50</field>
+            <field name="arch" type="xml">
+                <search string="Membership Partners">
+                    <field name="name"
+                           filter_domain="['|', '|','|','|','|', ('name', 'ilike', self),
+                           ('reg_no', 'ilike', self),
+                           ('mobile', 'ilike', self),
+                           ('phone', 'ilike', self),
+                           ('parent_id', 'ilike', self),
+                            ('ref' , '=', self)]"/>
+                    <field name="category_id"/>
+                    <field name="membership_start" invisible="1"/>
+                    <field name="membership_stop" string="End Membership Date"/>
+                    <filter name="customer" string="Customers" domain="[('customer_rank' ,'>', 0)]"/>
+                    <filter name="supplier" string="Vendors" domain="[('supplier_rank', '>', 0)]"/>
+                    <separator/>
+                    <filter name="all_members" string="Members" domain="[('is_student', '=',True )]"
+                            help="Invoiced/Paid/Free"/>
+                    <separator/>
+                    <filter string="Start Date" name="start_date" date="membership_start"/>
+                    <filter string="End Date" name="end_date" date="membership_stop"/>
+                    <group expand="0" string="Group By" colspan="10" col="8">
+                        <filter string="Salesperson" name="salesperson" domain="[]" context="{'group_by' : 'user_id'}"/>
+                        <filter string="Associate Member" name="associate" domain="[]"
+                                context="{'group_by': 'associate_member'}"/>
+                        <filter string="Membership State" name="membership_state" domain="[]"
+                                context="{'group_by': 'membership_state'}"/>
+                        <filter string="Start Date" name="start_month" help="Starting Date Of Membership" domain="[]"
+                                context="{'group_by': 'membership_start'}"/>
+                        <filter string="End Date" name="end_month" help="Ending Date Of Membership" domain="[]"
+                                context="{'group_by': 'membership_stop'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="membership_members_tree_karate">
+            <field name="name">Members</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <tree string="Members">
+                    <field name="name"/>
+                    <field name="membership_state"/>
+                    <!--                    <field name="associate_member"/>-->
+                    <field name="membership_start"/>
+                    <field name="membership_stop"/>
+                    <field name="user_id" invisible="1"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record model="ir.actions.act_window" id="action_membership_members_karate">
+            <field name="name">Members</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">kanban,tree,form,activity</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                       (0, 0, {'view_mode': 'kanban', 'view_id': ref('base.res_partner_kanban_view')}),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('membership_members_tree_karate')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('karate_management_system_form')})
+                ]"/>
+
+            <field name="search_view_id" ref="view_res_partner_member_filter"/>
+            <field name="context">{"search_default_all_members": 1,"search_default_is_student": True,
+                "default_free_member": False,"default_is_student": True}
+            </field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Add a new member
+                </p>
+                <p>
+                    Odoo helps you easily track all activities related to a member:
+                    Current Membership Status, Discussions and History of Membership, etc.
+                </p>
+            </field>
+        </record>
+
+        <menuitem name="Members" id="membership.menu_membership" sequence="0" parent="membership.menu_association"
+                  action="action_membership_members_karate"/>
+
+
+    </data>
+</odoo>
