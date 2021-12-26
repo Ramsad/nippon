@@ -4,7 +4,7 @@ from odoo import models, fields, api , _
 class KarateManagement(models.Model):
     _inherit = 'res.partner'
 
-    reg_no = fields.Char(string="Reg No", required=False, )
+    reg_no = fields.Char(string="Reg No", required=False, default="NKCD")
     registration_date = fields.Date(string="Registration Date", required=False,default=fields.Date.today() )
     dob = fields.Date(string="Date of Birth", required=False, )
     age = fields.Integer(string="Age", required=False, compute='calculate_age')
@@ -20,7 +20,7 @@ class KarateManagement(models.Model):
 
     @api.model
     def create(self, values):
-        values['reg_no'] = self.env['ir.sequence'].next_by_code('seq.membership') or _('New')
+        # values['reg_no'] = self.env['ir.sequence'].next_by_code('seq.membership') or _('New')
         return super(KarateManagement, self).create(values)
 
 
