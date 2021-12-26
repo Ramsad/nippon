@@ -382,8 +382,8 @@
                                                 <button name="generate_invoice" state="new"
                                                         attrs="{'invisible':[('invoice_id','!=',False)]}"
                                                         string="Generate Invoice" type="object" class="oe_highlight"/>
-                                                <field name="state" widget="statusbar"
-                                                       statusbar_visible="new,in_progress,passed,failed"/>
+<!--                                                <field name="state" widget="statusbar"-->
+<!--                                                       statusbar_visible="new,in_progress,passed,failed"/>-->
                                             </header>
                                             <div class="oe_button_box" name="button_box">
                                                 <button  attrs="{'invisible':[('invoice_id','=',False)]}" type="object" class="oe_stat_button" icon="fa-pencil-square-o"

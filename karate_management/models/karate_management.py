@@ -119,7 +119,7 @@ class MembersCertificate(models.Model):
         )
         invoice.action_post()
         self.write({
-            "status":"in_progress",
+
             "invoice_id":invoice,
         })
 

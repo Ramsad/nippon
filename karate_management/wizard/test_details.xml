@@ -9,8 +9,8 @@
                 <form string="Test Details">
                     <header>
 
-                        <field name="state" widget="statusbar"
-                               statusbar_visible="new,paid,passed,failed"/>
+<!--                        <field name="state" widget="statusbar"-->
+<!--                               statusbar_visible="new,paid,passed,failed"/>-->
                     </header>
                     <sheet>
 
