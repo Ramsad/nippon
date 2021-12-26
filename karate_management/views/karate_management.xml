@@ -73,7 +73,7 @@
                                 attrs="{'invisible': [('active', '=', True)]}"/>
                         <h2>
                             <strong>
-                                <field name="reg_no" readonly="0"/>
+                                <field name="reg_no"  style="width:30%" readonly="0"/>
                             </strong>
                         </h2>
                         <field name="image_1920" widget="image" class="oe_avatar"
