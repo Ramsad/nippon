@@ -59,7 +59,7 @@ class MembersCertificate(models.TransientModel):
                     "kyu":self.kyu,
                     "dan":self.dan,
                     "certificate_no":self.certificate_no,
-                    "certificate":self.certificate,
+                    # "certificate":self.certificate,
                     "partner_id":self.partner_id,
                     "amount":self.amount
                 }

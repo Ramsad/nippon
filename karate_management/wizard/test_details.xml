@@ -29,7 +29,7 @@
                             <group>
                                 <field name="belt" on_change="1"/>
                                 <field name="certificate_no"/>
-                                <field name="certificate"/>
+<!--                                <field name="certificate"/>-->
                                 <field name="partner_id" invisible="1"/>
                                 <field name="invoice_id" invisible="1"/>
                                 <field name="amount"/>
